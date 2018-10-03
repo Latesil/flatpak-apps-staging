@@ -1,0 +1,42 @@
+id: com.sublimetext.SublimeMerge
+runtime: org.freedesktop.Platform
+sdk: org.freedesktop.Sdk
+runtime-version: 18.08
+base: io.atom.electron.BaseApp
+base-version: 18.08
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --share=network
+  - --own-name=com.sublimemerge
+  - --talk-name=org.gnome.SettingsDaemon
+modules:
+  - name: sublimemerge
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra.sh /app/bin/apply_extra
+      - install -Dm755 sublime_merge.sh /app/bin/sublime_merge
+    sources:
+      - type: script
+        dest-filename: apply_extra.sh
+        commands:
+          - tar -xf sublime_merge.tar.xz --strip-components=1
+          - install -Dm644 sublime_merge.desktop export/share/applications/com.sublimetext.SublimeMerge.desktop
+          - for s in 16 32 48 128 256; do
+              install -Dm644 Icon/${s}x${s}/sublime-merge.png export/share/icons/hicolor/${s}x${s}/apps/com.sublimetext.SublimeMerge.png;
+            done
+          - sed "s|Exec=.*|Exec=sublime_merge %F|g" -i export/share/applications/com.sublimetext.SublimeMerge.desktop
+          - sed "s|Icon=.*|Icon=com.sublimetext.SublimeMerge|g" -i export/share/applications/com.sublimetext.SublimeMerge.desktop
+          - rm sublime_merge.tar.xz
+      - type: script
+        dest-filename: sublime_merge.sh
+        commands:
+          - cd /app/extra
+          - exec ./sublime_merge $@
+      - type: extra-data
+        only-arches:
+          - x86_64
+        url: "https://download.sublimetext.com/sublime_merge_build_1065_x64.tar.xz"
+        filename: sublime_merge.tar.xz
+        sha256: ebe9029ea71543a101dcfd09c5540759759c1e33fea31d4b98256803b7ceaf97
+        size: 4261524
