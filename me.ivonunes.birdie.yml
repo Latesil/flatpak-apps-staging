@@ -1,0 +1,77 @@
+id: me.ivonunes.birdie
+runtime: org.gnome.Platform
+sdk: org.gnome.Sdk
+runtime-version: "3.30"
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --share=network
+  - --socket=pulseaudio
+command: me.ivonunes.birdie
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /lib/cmake
+  - /share/man
+modules:
+  - name: birdie
+    buildsystem: meson
+    sources:
+      - type: git
+        url: "https://github.com/ivonunes/birdie.git"
+    modules:
+      - name: gtksourceview
+        sources:
+          - type: archive
+            url: "https://download.gnome.org/sources/gtksourceview/3.24/gtksourceview-3.24.9.tar.xz"
+            sha256: 699d76a453e6a3d3331906346e3dbfa25f2cbc9ec090e46635e9c6bb595e07c2
+
+      - name: rest
+        sources:
+          - type: archive
+            url: "https://download.gnome.org/sources/rest/0.7/rest-0.7.12.tar.xz"
+            sha256: 16ffa4929078dabfcfac31f9ce942072ebab67e3339ce9f378127457b03baf3a
+
+      - name: granite
+        buildsystem: cmake-ninja
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          - -DCMAKE_INSTALL_LIBDIR=/app/lib
+          - -DINTROSPECTION_GIRDIR=/app/share/gir-1.0
+          - -DINTROSPECTION_TYPELIBDIR=/app/lib/girepository-1.0
+        cleanup:
+          - /bin
+          - /share/applications
+        sources:
+          - type: archive
+            url: "https://github.com/elementary/granite/archive/5.1.0.tar.gz"
+            sha256: 4483399c62bf4cf5c26a6b708736b2b80caae8d40a0452be45548f7e8f23e0ed
+        modules:
+          - name: libgee
+            make-install-args:
+              - girdir=/app/share/gir-1.0
+              - typelibdir=/app/lib/girepository-1.0
+            sources:
+              - type: archive
+                url: "https://download.gnome.org/sources/libgee/0.20/libgee-0.20.0.tar.xz"
+                sha256: 21308ba3ed77646dda2e724c0e8d5a2f8d101fb05e078975a532d7887223c2bb
+
+      - name: pidgin
+        config-opts:
+          - --disable-gtkui
+          - --disable-consoleui
+          - --disable-tcl
+          - --disable-screensaver
+          - --disable-vv
+          - --disable-idn
+          - --disable-meanwhile
+          - --disable-avahi
+          - --disable-nm
+          - --disable-perl
+        sources:
+          - type: archive
+            url: "https://downloads.sourceforge.net/project/pidgin/Pidgin/2.13.0/pidgin-2.13.0.tar.bz2"
+            sha256: 2747150c6f711146bddd333c496870bfd55058bab22ffb7e4eb784018ec46d8f
