@@ -6,6 +6,7 @@ finish-args:
   - --share=ipc
   - --socket=fallback-x11
   - --socket=wayland
+  - --device=dri
   - --share=network
   - --socket=pulseaudio
 command: me.ivonunes.birdie
