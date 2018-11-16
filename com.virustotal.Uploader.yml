@@ -1,0 +1,48 @@
+id: com.virustotal.Uploader
+sdk: org.kde.Sdk
+runtime: org.kde.Platform
+runtime-version: '5.11'
+command: VirusTotalUploader
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+modules:
+  - name: jansson
+    sources:
+      - type: archive
+        url: "https://github.com/akheron/jansson/archive/v2.11.tar.gz"
+        sha256: 6ff0eab3a8baf64d21cae25f88a0311fb282006eb992080722a9099469c32881
+      - type: script
+        dest-filename: autogen.sh
+        commands:
+          - autoreconf -ifv
+
+  - name: c-vtapi
+    sources:
+      - type: git
+        url: "https://github.com/VirusTotal/c-vtapi.git"
+        commit: 0e525b2
+      - type: script
+        dest-filename: autogen.sh
+        commands:
+          - autoreconf -ifv
+
+  - name: qt-virustotal-uploader
+    buildsystem: qmake
+    config-opts:
+      - LIBS+=-L/app/lib
+    post-install:
+      - install -Dm755 VirusTotalUploader -t /app/bin
+      - install -Dm644 vtlogo-sigma.png /app/share/icons/hicolor/128x128/apps/${FLATPAK_ID}.png
+    sources:
+      - type: git
+        url: "https://github.com/VirusTotal/qt-virustotal-uploader.git"
+        commit: 5ef9e18
