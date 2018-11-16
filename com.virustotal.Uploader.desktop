@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=VirusTotal Uploader
+Exec=VirusTotalUploader
+Icon=com.virustotal.Uploader
+Terminal=false
+StartupNotify=true
+Categories=System;Security;
