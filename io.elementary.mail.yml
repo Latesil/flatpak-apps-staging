@@ -1,0 +1,237 @@
+id: io.elementary.mail
+sdk: org.gnome.Sdk
+runtime: org.gnome.Platform
+runtime-version: "3.30"
+command: io.elementary.mail
+rename-icon: internet-mail
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --talk-name=org.gnome.OnlineAccounts
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.gnome.evolution.dataserver.*
+  - --talk-name=org.freedesktop.Notifications
+  - --filesystem=xdg-run/dconf
+  - --filesystem=xdg-config/dconf:ro
+  - --talk-name=ca.desrt.dconf
+  - --talk-name=org.gtk.vfs
+  - --talk-name=org.gtk.vfs.*
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /lib/cmake
+  - /share/gir-1.0
+  - /share/vala
+  - /share/man
+  - /share/gtk-doc
+modules:
+  - name: elementary-mail
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/elementary/mail.git
+    modules:
+
+      - name: evolution-data-server
+        buildsystem: cmake-ninja
+        config-opts:
+          - -DENABLE_FILE_LOCKING=fcntl
+          - -DENABLE_DOT_LOCKING=OFF
+          - -DENABLE_OAUTH2=ON
+          - -DENABLE_GTK=ON
+          - -DENABLE_UOA=OFF
+          - -DENABLE_GOA=ON
+          - -DENABLE_EXAMPLES=OFF
+          - -DENABLE_INTROSPECTION=ON
+          - -DENABLE_VALA_BINDINGS=ON
+          - -DENABLE_INSTALLED_TESTS=OFF
+          - -DENABLE_GTK_DOC=OFF
+          - -DENABLE_DBUS_SESSION_TOOL=ON
+          - -DWITH_PRIVATE_DOCS=OFF
+          - -DWITH_PHONENUMBER=OFF
+          - -DWITH_SYSTEMDUSERUNITDIR=OFF
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/evolution-data-server/3.30/evolution-data-server-3.30.2.tar.xz
+            sha256: 5b3ab1557ea27475e5f78014ae5a4a989179cbf8c98ce7e26bd70b7767388e40
+        cleanup:
+          - /share/GConf
+        modules:
+
+          - name: libdb
+            subdir: build_unix
+            config-opts:
+              - --enable-shared
+              - --enable-dbm
+              - --enable-stl
+            sources:
+              - type: archive
+                url: http://download.oracle.com/berkeley-db/db-6.2.32.tar.gz
+                sha256: a9c5e2b004a5777aa03510cfe5cd766a4a3b777713406b02809c17c8e0e7a8fb
+              - type: script
+                dest-filename: build_unix/configure
+                commands:
+                  - exec ../dist/configure $@
+            cleanup:
+              - /bin
+              - /docs
+
+          - name: openldap
+            rm-configure: true
+            config-opts:
+              - --disable-backends
+              - --disable-overlays
+              - --disable-slapd
+              - --disable-debug
+              - --enable-dynamic
+              - --without-threads
+              - --with-tls=gnutls
+            sources:
+              - type: archive
+                url: http://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.4.46.tgz
+                sha256: 9a90dcb86b99ae790ccab93b7585a31fbcbeec8c94bf0f7ab0ca0a87ea0c4b2d
+              - type: script
+                dest-filename: autogen.sh
+                commands:
+                  - AUTOMAKE=/bin/true autoreconf -vfi
+            cleanup:
+              - /bin
+              - /share/man
+
+          - name: gnome-online-accounts
+            config-opts:
+              - --disable-Werror
+              - --disable-telepathy
+              - --disable-documentation
+              - --disable-backend
+            sources:
+              - type: archive
+                url: https://download.gnome.org/sources/gnome-online-accounts/3.28/gnome-online-accounts-3.28.0.tar.xz
+                sha256: 87bc4ef307604f1ce4f09f6e5c9996ef8d37ca5e0a3bf76f6b27d71844adb40c
+            cleanup:
+              - /bin
+              - /share/GConf
+
+          - name: libgweather
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: https://download.gnome.org/sources/libgweather/3.28/libgweather-3.28.2.tar.xz
+                sha256: 081ce81653afc614e12641c97a8dd9577c524528c63772407ae2dbcde12bde75
+            modules:
+
+              - name: geocode-glib
+                buildsystem: meson
+                config-opts:
+                  - -Denable-installed-tests=false
+                  - -Denable-introspection=true
+                  - -Denable-gtk-doc=false
+                sources:
+                  - type: archive
+                    url: https://download.gnome.org/sources/geocode-glib/3.26/geocode-glib-3.26.0.tar.xz
+                    sha256: ea4086b127050250c158beff28dbcdf81a797b3938bb79bbaaecc75e746fbeee
+
+          - name: libgdata
+            config-opts:
+              - --disable-always-build-tests
+              - --disable-installed-tests
+              - --disable-gtk-doc
+              - --enable-introspection
+              - --enable-vala
+            sources:
+              - type: archive
+                url: https://download.gnome.org/sources/libgdata/0.17/libgdata-0.17.9.tar.xz
+                sha256: 85c4f7674c0098ffaf060ae01b6b832cb277b3673d54ace3bdedaad6b127453a
+            modules:
+
+              - name: liboauth
+                config-opts:
+                  - --enable-nss
+                sources:
+                  - type: archive
+                    url: https://downloads.sourceforge.net/project/liboauth/liboauth-1.0.3.tar.gz
+                    sha256: 0df60157b052f0e774ade8a8bac59d6e8d4b464058cc55f9208d72e41156811f
+
+          - name: libical
+            buildsystem: cmake-ninja
+            config-opts:
+              - -DBUILD_SHARED_LIBS:BOOL=ON
+              - -DGOBJECT_INTROSPECTION:BOOL=ON
+            sources:
+              - type: archive
+                url: https://github.com/libical/libical/releases/download/v3.0.4/libical-3.0.4.tar.gz
+                sha256: 72b216e10233c3f60cb06062facf41f3b0f70615e5a60b47f9853341a0d5d145
+
+      - name: folks
+        sources:
+          - type: archive
+            url: https://download.gnome.org/sources/folks/0.11/folks-0.11.4.tar.xz
+            sha256: a7b03ed30373e29f62fc3e6f498adce2d4909b852608fc2058a02fda9f80189a
+        modules:
+
+          - name: telepathy-glib
+            config-opts:
+              - --enable-introspection=yes
+              - --enable-vala-bindings
+            sources:
+              - type: archive
+                url: https://telepathy.freedesktop.org/releases/telepathy-glib/telepathy-glib-0.24.1.tar.gz
+                sha256: 9e0df1d8f857e0270cf0b32e2d1ca5a24aa7282873361785d573f72ad7f7d5eb
+
+          - name: libgee
+            make-install-args:
+              - girdir=/app/share/gir-1.0
+              - typelibdir=/app/lib/girepository-1.0
+            sources:
+              - type: archive
+                url: https://download.gnome.org/sources/libgee/0.20/libgee-0.20.1.tar.xz
+                sha256: bb2802d29a518e8c6d2992884691f06ccfcc25792a5686178575c7111fea4630
+
+      - name: granite
+        buildsystem: cmake-ninja
+        config-opts:
+          - -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          - -DCMAKE_INSTALL_LIBDIR=/app/lib
+          - -DINTROSPECTION_GIRDIR=/app/share/gir-1.0
+          - -DINTROSPECTION_TYPELIBDIR=/app/lib/girepository-1.0
+        sources:
+          - type: archive
+            url: https://github.com/elementary/granite/archive/5.2.1.tar.gz
+            sha256: 2166902654f62d300c6990d634f494632aaf14dfe10395dd9ff9d52a503c7ca8
+        cleanup:
+          - /bin
+          - /share/applications
+
+  - name: app-icon
+    buildsystem: simple
+    build-commands:
+      - for s in 16 24 32 48 64 128; do
+          icondir=/app/share/icons/hicolor/${s}x${s}/apps ;
+          mkdir -p $icondir ;
+          convert -background none /app/share/icons/elementary/apps/$s/internet-mail.svg png32:$icondir/internet-mail.png ;
+        done
+    modules:
+
+        - name: imagemagick
+          sources:
+            - type: archive
+              url: "https://github.com/ImageMagick/ImageMagick/archive/7.0.7-35.tar.gz"
+              sha256: eb153673ba7ab20ad2551453dbbbf05d5050630b369116230bb2589a6318b0a5
+          cleanup:
+            - '*'
+
+        - name: elementary-icons
+          buildsystem: meson
+          config-opts:
+            - -Dpalettes=false
+          sources:
+            - type: archive
+              url: https://github.com/elementary/icons/archive/5.0.tar.gz
+              sha256: 7ef504b8766855e66dfac0fc09135433131cacfdb58bad142151943cf39f6313
+          cleanup:
+            - '*'
