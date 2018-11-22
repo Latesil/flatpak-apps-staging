@@ -99,6 +99,111 @@ modules:
           - sed 's|/usr/lib|/app/lib|' -i wxPython/config.py
           - sed 's|-O3|-O2|' -i wxPython/config.py
 
+  - name: imagemagick
+    sources:
+      - type: archive
+        url: "https://github.com/ImageMagick/ImageMagick/archive/7.0.7-35.tar.gz"
+        sha256: eb153673ba7ab20ad2551453dbbbf05d5050630b369116230bb2589a6318b0a5
+
+  - name: wget
+    sources:
+      - type: archive
+        url: "https://ftp.gnu.org/gnu/wget/wget-1.19.tar.xz"
+        sha256: 0f1157bbf4daae19f3e1ddb70c6ccb2067feb834a6aa23c9d9daa7f048606384
+
+  - name: p7zip
+    no-autogen: true
+    make-args:
+      - all2
+      - OPTFLAGS=-g
+      - DEST_HOME=/app
+      - DEST_BIN=/app/bin
+      - DEST_SHARE=/app/lib/p7zip
+      - DEST_MAN=/app/share/man
+    make-install-args:
+      - DEST_HOME=/app
+      - DEST_BIN=/app/bin
+      - DEST_SHARE=/app/lib/p7zip
+      - DEST_MAN=/app/share/man
+    sources:
+      - type: archive
+        url: "http://downloads.sf.net/p7zip/p7zip_16.02_src_all.tar.bz2"
+        sha256: 5eb20ac0e2944f6cb9c2d51dd6c4518941c185347d4089ea89087ffdd6e2341f
+      - type: shell
+        only-arches:
+          - "x86_64"
+        commands:
+          - cp -f makefile.linux_amd64_asm makefile.machine
+      - type: shell
+        only-arches:
+          - "i386"
+        commands:
+          - cp -f makefile.linux_x86_asm_gcc_4.X makefile.machine
+    modules:
+      - name: yasm
+        sources:
+          - type: archive
+            url: "http://www.tortall.net/projects/yasm/releases/yasm-1.3.0.tar.gz"
+            sha256: 3dce6601b495f5b3d45b59f7d2492a340ee7e84b5beca17e48f862502bd5603f
+        cleanup:
+          - "*"
+
+  - name: cabextract
+    sources:
+      - type: archive
+        url: "https://www.cabextract.org.uk/cabextract-1.6.tar.gz"
+        sha256: cee661b56555350d26943c5e127fc75dd290b7f75689d5ebc1f04957c4af55fb
+
+  - name: icoutils
+    sources:
+      - type: archive
+        url: "http://savannah.nongnu.org/download/icoutils/icoutils-0.32.3.tar.bz2"
+        sha256: 17abe02d043a253b68b47e3af69c9fc755b895db68fdc8811786125df564c6e0
+
+  - name: jq
+    rm-configure: true
+    sources:
+      - type: archive
+        url: "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-1.6.tar.gz"
+        sha256: 5de8c8e29aaa3fb9cc6b47bb27299f271354ebb72514e3accadc7d38b5bbaa72
+      - type: script
+        dest-filename: autogen.sh
+        commands:
+          - autoreconf -ifv
+
+  - name: netcat
+    buildsystem: simple
+    build-commands:
+      - make -j$FLATPAK_BUILDER_N_JOBS linux
+      - install -Dm755 nc -t /app/bin/
+    sources:
+      - type: archive
+        url: "http://downloads.sourceforge.net/nc110/nc110.20180111.tar.xz"
+        sha256: 9c223f2472fc5b0d77c29a88536913e6573217cbc028dd276c30e689feeb182d
+
+  - name: xterm
+    sources:
+      - type: archive
+        url: "ftp://ftp.invisible-island.net/xterm/xterm-337.tgz"
+        sha256: ccac77ded347e78d5ffb69b381adf8b2377ce66644b8bec6308aaf19b9aecfa7
+    modules:
+      - name: ncurses
+        sources:
+          - type: archive
+            url: "https://invisible-mirror.net/archives/ncurses/current/ncurses-6.1-20180923.tgz"
+            sha256: 7880dd8048d3b72d40103d5440ee42e1bf826fbb708cbbd25fedd77c4b1a1b69
+      - name: libXaw
+        sources:
+          - type: archive
+            url: "https://www.x.org/archive//individual/lib/libXaw-1.0.13.tar.gz"
+            sha256: 7e74ac3e5f67def549722ff0333d6e6276b8becd9d89615cda011e71238ab694
+        modules:
+          - name: libXmu
+            sources:
+              - type: archive
+                url: "https://www.x.org/archive//individual/lib/libXmu-1.1.2.tar.bz2"
+                sha256: 756edc7c383254eef8b4e1b733c3bf1dc061b523c9f9833ac7058378b8349d0b
+
   - name: playonlinux
     no-autogen: true
     make-install-args:
