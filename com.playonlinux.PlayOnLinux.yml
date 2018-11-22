@@ -1,0 +1,131 @@
+id: com.playonlinux.PlayOnLinux
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+command: playonlinux
+rename-icon: playonlinux
+rename-desktop-file: PlayOnLinux.desktop
+rename-appdata-file: PlayOnLinux.appdata.xml
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --device=all
+  - --share=network
+  - --allow=multiarch
+add-extensions:
+  org.freedesktop.Platform.Compat.i386:
+    directory: lib/i386-linux-gnu
+    version: "18.08"
+  org.freedesktop.Platform.Compat.i386.Debug:
+    directory: lib/debug/lib/i386-linux-gnu
+    version: "18.08"
+    no-autodownload: true
+  org.freedesktop.Platform.GL32:
+    directory: lib/i386-linux-gnu/GL
+    version: "1.4"
+    versions: "18.08;1.6;1.4"
+    subdirectories: true
+    no-autodownload: true
+    autodelete: false
+    add-ld-path: lib
+    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;
+    download-if: active-gl-driver
+    enable-if: active-gl-driver
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - /share/doc
+modules:
+  - name: python2
+    config-opts:
+      - --enable-shared
+      - --disable-static
+      - --with-system-ffi
+    post-install:
+      - chmod -v 755 /app/lib/libpython*
+    sources:
+      - type: archive
+        url: "https://www.python.org/ftp/python/2.7.15/Python-2.7.15.tar.xz"
+        sha256: 22d9b1ac5b26135ad2b8c2901a9413537e08749a753356ee913c84dbd2df5574
+    cleanup:
+      - "*.pyo"
+
+  - shared-modules/glu/glu-9.0.0.json
+
+  - name: wxWidgets
+    build-options:
+      cxxflags: -std=c++0x
+    config-opts:
+      - --with-opengl
+      - --with-libjpeg
+      - --with-libpng
+      - --with-zlib
+      - --disable-sdltest
+      - --enable-unicode
+      - --enable-display
+      - --enable-propgrid
+      - --disable-webkit
+      - --disable-webview
+      - --disable-webviewwebkit
+      - --with-expat=builtin
+      - --with-libiconv=/usr
+    sources:
+      - type: archive
+        url: "https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.4/wxWidgets-3.0.4.tar.bz2"
+        sha256: 96157f988d261b7368e5340afa1a0cad943768f35929c22841f62c25b17bf7f0
+    cleanup:
+      - /bin
+      - /share/bakefile
+      - /share/aclocal
+      - /lib/wx/include
+
+  - name: wxPython
+    subdir: wxPython
+    buildsystem: simple
+    build-commands:
+      - python2 setup.py build WXPORT=gtk3
+      - python2 setup.py install WXPORT=gtk3 --prefix=/app
+    sources:
+      - type: archive
+        url: "http://downloads.sourceforge.net/wxpython/wxPython-src-3.0.2.0.tar.bz2"
+        sha256: d54129e5fbea4fb8091c87b2980760b72c22a386cb3b9dd2eebc928ef5e8df61
+      - type: shell
+        commands:
+          - sed 's|/usr/lib|/app/lib|' -i wxPython/config.py
+          - sed 's|-O3|-O2|' -i wxPython/config.py
+
+  - name: playonlinux
+    no-autogen: true
+    make-install-args:
+      - PREFIX=/app
+    post-install:
+      #FIXME this is hackish and ugly
+      - for l in lang/locale/*; do
+          lang=$(basename $l) ;
+          test -d  /app/share/locale/$lang || mkdir -p /app/share/locale/$lang ;
+          cp -Rv lang/locale/$lang/* /app/share/locale/$lang/ ;
+        done
+      - python2 -m compileall /app/share/playonlinux/python
+      - sed -i 's|/usr|/app|g' -i /app/bin/playonlinux*
+      - install -Dm644 /app/share/pixmaps/playonlinux.png /app/share/icons/hicolor/128x128/apps/playonlinux.png
+      - install -Dm644 /app/share/pixmaps/playonlinux16.png /app/share/icons/hicolor/16x16/apps/playonlinux.png
+      - install -Dm644 /app/share/pixmaps/playonlinux32.png /app/share/icons/hicolor/32x32/apps/playonlinux.png
+    sources:
+      - type: archive
+        url: "https://github.com/PlayOnLinux/POL-POM-4/archive/4.3.3.tar.gz"
+        sha256: 8ceb853149719d20891ea1d776de224f57db50b76211d6c5a64b3650c19a27e4
+      #FIXME this is hackish and ugly
+      - type: shell
+        commands:
+          - sed 's|cp -R ./lang/locale/\* \$(sharedir)/locale/||g' -i Makefile
+
+  - name: compat32
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib/i386-linux-gnu /app/lib/debug/lib/i386-linux-gnu
+      - ln -s i386-linux-gnu/ld-linux.so.2 /app/lib/ld-linux.so.2
