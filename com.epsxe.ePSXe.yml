@@ -3,6 +3,8 @@ sdk: org.freedesktop.Sdk
 runtime: org.freedesktop.Platform
 runtime-version: "18.08"
 command: epsxe
+rename-icon: epsxe
+rename-desktop-file: epsxe.desktop
 finish-args:
   - --share=ipc
   - --socket=x11
@@ -73,3 +75,18 @@ modules:
         url: "http://www.epsxe.com/files/ePSXe205linux_x64.zip"
         sha256: 60a99db5f400328bebe0a972caea6206d1a24d59a092248c0b5fc12e184eca99
         size: 1323391
+
+  - name: epsxe-data
+    buildsystem: simple
+    build-commands:
+      - for s in 16 24 32 48 64 128 256 512; do
+          icondir=/app/share/icons/hicolor/${s}x${s}/apps ;
+          mkdir -p $icondir ;
+          rsvg-convert --output $icondir/epsxe.png --width=${s} --height=${s} epsxe.svg ;
+        done
+      - install -Dm644 epsxe.desktop -t /app/share/applications
+    sources:
+      - type: file
+        path: epsxe.svg
+      - type: file
+        path: epsxe.desktop
