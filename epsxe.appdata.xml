@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+    <id>epsxe.desktop</id>
+    <name>ePSXe</name>
+    <summary>Playstation games emulator for Windows, Linux &amp; Android</summary>
+    <description>
+        <p>A PlayStation video game console emulator for x86-based PC hardware with Microsoft Windows or Linux, as well as devices running Android.</p>
+    </description>
+    <categories>
+        <category>Game</category>
+        <category>Emulator</category>
+    </categories>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>LicenseRef-proprietary</project_license>
+    <url type="homepage">http://www.epsxe.com/</url>
+    <url type="help">http://www.epsxe.com/help.php</url>
+    <launchable type="desktop-id">epsxe.desktop</launchable>
+    <screenshots>
+        <screenshot type="default">
+            <image>https://d2.alternativeto.net/dist/s/51332fe9-32bc-41c5-a35a-c6ac34a3ea10_8_full.png?format=png</image>
+        </screenshot>
+    </screenshots>
+</component>

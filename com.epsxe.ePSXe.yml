@@ -5,6 +5,7 @@ runtime-version: "18.08"
 command: epsxe
 rename-icon: epsxe
 rename-desktop-file: epsxe.desktop
+rename-appdata-file: epsxe.appdata.xml
 finish-args:
   - --share=ipc
   - --socket=x11
@@ -85,8 +86,11 @@ modules:
           rsvg-convert --output $icondir/epsxe.png --width=${s} --height=${s} epsxe.svg ;
         done
       - install -Dm644 epsxe.desktop -t /app/share/applications
+      - install -Dm644 epsxe.appdata.xml -t /app/share/appdata
     sources:
       - type: file
         path: epsxe.svg
       - type: file
         path: epsxe.desktop
+      - type: file
+        path: epsxe.appdata.xml
