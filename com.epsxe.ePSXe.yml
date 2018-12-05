@@ -44,22 +44,14 @@ modules:
         dest-filename: apply_extra.sh
         commands:
           - unzip ePSXe.zip
-          - chmod +x /app/extra/{ePSXe,epsxe_x64}*
+          - test -f epsxe_x64 && mv -n epsxe_x64 ePSXe
+          - chmod +x ePSXe
           - rm ePSXe.zip
 
       - type: script
         dest-filename: epsxe.sh
-        only-arches:
-          - "i386"
         commands:
           - exec /app/extra/ePSXe $@
-
-      - type: script
-        dest-filename: epsxe.sh
-        only-arches:
-          - "x86_64"
-        commands:
-          - exec /app/extra/epsxe_x64 $@
 
       - type: extra-data
         only-arches:
