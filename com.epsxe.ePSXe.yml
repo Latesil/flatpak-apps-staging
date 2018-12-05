@@ -1,0 +1,75 @@
+id: com.epsxe.ePSXe
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+command: epsxe
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --device=all
+  - --socket=pulseaudio
+  - --persist=.epsxe
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+modules:
+  - shared-modules/SDL/SDL-1.2.15.json
+  - shared-modules/SDL/SDL_ttf-2.0.11.json
+
+  - name: ncurses
+    config-opts:
+      - --with-abi-version=5
+      - --with-shared
+      - --with-chtype=long
+      - --with-termlib=tinfo
+      - --without-progs
+    sources:
+      - type: archive
+        url: "https://invisible-mirror.net/archives/ncurses/current/ncurses-6.1-20181201.tgz"
+        sha256: 702ff9added8b776f29a461acb053f348ae6391fa19c0570c78fa99ce4c3ca8a
+
+  - name: epsxe
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 epsxe.sh /app/bin/epsxe
+      - install -Dm755 apply_extra.sh /app/bin/apply_extra
+    sources:
+      - type: script
+        dest-filename: apply_extra.sh
+        commands:
+          - unzip ePSXe.zip
+          - chmod +x /app/extra/{ePSXe,epsxe_x64}*
+          - rm ePSXe.zip
+
+      - type: script
+        dest-filename: epsxe.sh
+        only-arches:
+          - "i386"
+        commands:
+          - exec /app/extra/ePSXe $@
+
+      - type: script
+        dest-filename: epsxe.sh
+        only-arches:
+          - "x86_64"
+        commands:
+          - exec /app/extra/epsxe_x64 $@
+
+      - type: extra-data
+        only-arches:
+          - "i386"
+        filename: ePSXe.zip
+        url: "http://www.epsxe.com/files/ePSXe205linux.zip"
+        sha256: 740e1ccc4ccd88ced688098b8e1d28d2fd23666e906d2ed19da794aa28a3e798
+        size: 1225227
+
+      - type: extra-data
+        only-arches:
+          - "x86_64"
+        filename: ePSXe.zip
+        url: "http://www.epsxe.com/files/ePSXe205linux_x64.zip"
+        sha256: 60a99db5f400328bebe0a972caea6206d1a24d59a092248c0b5fc12e184eca99
+        size: 1323391
