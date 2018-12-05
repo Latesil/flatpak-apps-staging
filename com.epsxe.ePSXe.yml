@@ -12,6 +12,13 @@ finish-args:
   - --device=all
   - --socket=pulseaudio
   - --persist=.epsxe
+add-extensions:
+  com.epsxe.ePSXe.plugin:
+    directory: lib/epsxe
+    subdirectories: true
+    no-autodownload: true
+    merge-dirs: cfg;plugins;
+    add-ld-path: plugins
 cleanup:
   - "*.a"
   - "*.la"
@@ -39,6 +46,7 @@ modules:
     build-commands:
       - install -Dm755 epsxe.sh /app/bin/epsxe
       - install -Dm755 apply_extra.sh /app/bin/apply_extra
+      - mkdir -p /app/lib/epsxe/{cfg,plugins}
     sources:
       - type: script
         dest-filename: apply_extra.sh
@@ -46,6 +54,8 @@ modules:
           - unzip ePSXe.zip
           - test -f epsxe_x64 && mv -n epsxe_x64 ePSXe
           - chmod +x ePSXe
+          - ln -s ../lib/epsxe/cfg .
+          - ln -s ../lib/epsxe/plugins .
           - rm ePSXe.zip
 
       - type: script
