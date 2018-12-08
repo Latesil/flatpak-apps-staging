@@ -1,0 +1,87 @@
+id: com.nexusmods.NexusModManager
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "1.6"
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.mono5
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --device=dri
+  - --share=network
+  - --socket=pulseaudio
+  - --env=MONO_REGISTRY_PATH=/var/config/mono/registry
+command: NexusModManager
+build-options:
+  append-path: /usr/lib/sdk/mono5/bin
+  append-ld-library-path: /usr/lib/sdk/mono5/lib
+  env:
+    PKG_CONFIG_PATH: /app/lib/pkgconfig:/app/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/sdk/mono5/lib/pkgconfig
+    MONO_IOMAP: all
+modules:
+  - name: libgdiplus
+    sources:
+      - type: archive
+        url: "https://download.mono-project.com/sources/libgdiplus/libgdiplus0-5.6.tar.gz"
+        sha256: e1f2c0443af8d37b1a2971feb8826c82e932cff36dab814b94fce22f4d3dc53a
+    cleanup:
+      - "*.a"
+      - "*.la"
+      - /lib/pkgconfig
+
+  - shared-modules/gtk2/gtk2.json
+
+  - name: NexusModManager
+    buildsystem: simple
+    build-commands:
+      - xbuild /p:Configuration=Release NexusClient.sln
+      - cp -av Stage/Release /app/lib/NexusModManager
+    sources:
+      - type: archive
+        url: "https://github.com/Nexus-Mods/Nexus-Mod-Manager/archive/0.65.10.tar.gz"
+        sha256: 8c6cbc31b6843977bf271f7b8bf6ff552258805d6ffefa8461d711f2fab70680
+
+      - type: file
+        dest: Stage/packages
+        dest-filename: Squid-Box.SevenZipSharp.1.1.91.nupkg
+        url: "https://nuget.org/api/v2/package/Squid-Box.SevenZipSharp/1.1.91"
+        sha256: d9719d303d23ef9c3e736e8ff4771064fe91d511b9e6bdd9a3bb944b29ea022b
+
+      - type: file
+        dest: Stage/packages
+        dest-filename: NUnit.3.10.1.nupkg
+        url: "https://nuget.org/api/v2/package/NUnit/3.10.1"
+        sha256: 3529193f6028d7f7ccc65c6cb83d62d1b1c39a7d7ba5f74036cd6b69f55b10b6
+
+      - type: shell
+        commands:
+          - cd Stage/packages/; for p in *.nupkg; do
+              mkdir ${p/.nupkg/} ;
+              cd ${p/.nupkg/} ;
+              unzip ../$p ;
+              cd .. ;
+            done
+
+  - name: NexusModManager-data
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 NexusModManager.sh /app/bin/NexusModManager
+    sources:
+      - type: script
+        dest-filename: NexusModManager.sh
+        commands:
+          - exec mono /app/lib/NexusModManager/NexusClient.exe $@
+
+  - name: mono-runtime
+    build-options:
+      strip: true
+      no-debuginfo: true
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/mono5/install.sh
+        System.Drawing
+        System.Drawing.Design
+        System.Design
+        System.Windows
+        System.Windows.Forms
+        Mono.WebBrowser
