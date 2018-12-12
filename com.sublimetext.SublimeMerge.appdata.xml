@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+    <id>com.sublimetext.SublimeMerge</id>
+    <name>Sublime Merge</name>
+    <summary>Git Client by Sublime</summary>
+    <description>
+        <p>A snappy UI, three-way merge tool, side-by-side diffs, syntax highlighting, and more.</p>
+    </description>
+    <categories>
+        <category>Development</category>
+    </categories>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>LicenseRef-proprietary=https://www.sublimehq.com/eula</project_license>
+    <url type="homepage">https://www.sublimemerge.com/</url>
+    <url type="help">https://www.sublimemerge.com/support</url>
+    <launchable type="desktop-id">com.sublimetext.SublimeMerge.desktop</launchable>
+    <screenshots>
+        <screenshot type="default">
+            <image>https://www.sublimemerge.com/screencasts/linux_image_1_dark_packed.png</image>
+        </screenshot>
+        <screenshot>
+            <image>https://www.sublimemerge.com/screencasts/linux_image_2_dark_packed.png</image>
+        </screenshot>
+    </screenshots>
+</component>

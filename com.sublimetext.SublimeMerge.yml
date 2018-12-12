@@ -18,6 +18,7 @@ modules:
     build-commands:
       - install -Dm755 apply_extra.sh /app/bin/apply_extra
       - install -Dm755 sublime_merge.sh /app/bin/sublime_merge
+      - install -Dm644 ${FLATPAK_ID}.appdata.xml -t /app/share/appdata/
     sources:
       - type: script
         dest-filename: apply_extra.sh
@@ -42,3 +43,5 @@ modules:
         filename: sublime_merge.tar.xz
         sha256: f4ac60d49e24ff0aaa184fc339a90fe18bdfa6115ba53029a787211bbe3414d6
         size: 4242548
+      - type: file
+        path: com.sublimetext.SublimeMerge.appdata.xml
