@@ -1,15 +1,17 @@
 id: com.sublimetext.SublimeMerge
 runtime: org.freedesktop.Platform
 sdk: org.freedesktop.Sdk
-runtime-version: 18.08
+runtime-version: "18.08"
 base: io.atom.electron.BaseApp
-base-version: 18.08
+base-version: "18.08"
 finish-args:
   - --share=ipc
   - --socket=x11
   - --share=network
   - --own-name=com.sublimemerge
-  - --talk-name=org.gnome.SettingsDaemon
+  - --talk-name=ca.desrt.dconf
+  - --filesystem=xdg-config/dconf:ro
+command: sublime_merge
 modules:
   - name: sublimemerge
     buildsystem: simple
@@ -36,7 +38,7 @@ modules:
       - type: extra-data
         only-arches:
           - x86_64
-        url: "https://download.sublimetext.com/sublime_merge_build_1065_x64.tar.xz"
+        url: "https://download.sublimetext.com/sublime_merge_build_1097_x64.tar.xz"
         filename: sublime_merge.tar.xz
-        sha256: ebe9029ea71543a101dcfd09c5540759759c1e33fea31d4b98256803b7ceaf97
-        size: 4261524
+        sha256: f4ac60d49e24ff0aaa184fc339a90fe18bdfa6115ba53029a787211bbe3414d6
+        size: 4242548
