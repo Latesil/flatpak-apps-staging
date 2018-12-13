@@ -1,0 +1,81 @@
+id: com.adobe.Reader
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --device=dri
+  - --persist=.adobe
+  - --filesystem=xdg-documents
+  - --filesystem=xdg-download
+command: acroread
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - /share/gtk-doc
+modules:
+  - shared-modules/gtk2/gtk2.json
+  - shared-modules/glu/glu-9.0.0.json
+
+  - name: gdk-pixbuf2
+    buildsystem: meson
+    config-opts:
+      - -Dgir=false
+      - -Dman=false
+      - -Dinstalled_tests=false
+    sources:
+      - type: archive
+        url: "http://download.gnome.org/sources/gdk-pixbuf/2.38/gdk-pixbuf-2.38.0.tar.xz"
+        sha256: dd50973c7757bcde15de6bcd3a6d462a445efd552604ae6435a0532fbbadae47
+
+  - name: pango
+    config-opts:
+      - --disable-introspection
+      - --disable-installed-tests
+    sources:
+      - type: archive
+        url: "https://download.gnome.org/sources/pango/1.42/pango-1.42.4.tar.xz"
+        sha256: 1d2b74cd63e8bd41961f2f8d952355aa0f9be6002b52c8aa7699d9f5da597c9d
+
+  - name: pangox-compat
+    sources:
+      - type: archive
+        url: "https://download.gnome.org/sources/pangox-compat/0.0/pangox-compat-0.0.2.tar.xz"
+        sha256: 552092b3b6c23f47f4beee05495d0f9a153781f62a1c4b7ec53857a37dfce046
+
+  - name: libidn
+    sources:
+      - type: archive
+        url: "https://ftp.gnu.org/gnu/libidn/libidn-1.34.tar.gz"
+        sha256: 3719e2975f2fb28605df3479c380af2cf4ab4e919e1506527e4c7670afff6e3c
+
+  - name: AdobeReader
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra.sh /app/bin/apply_extra
+      - install -Dm755 acroread.sh /app/bin/acroread
+    sources:
+      - type: script
+        dest-filename: apply_extra.sh
+        commands:
+          - tar -xjf AdbeRdr.tar.bz2 --strip-components=1
+          - tar -xf ILINXR.TAR
+          - tar -xf COMMON.TAR
+          - rm AdbeRdr.tar.bz2 ILINXR.TAR COMMON.TAR INSTALL
+
+      - type: extra-data
+        only-arches:
+          - "i386"
+        filename: AdbeRdr.tar.bz2
+        url: "http://ardownload.adobe.com/pub/adobe/reader/unix/9.x/9.5.5/enu/AdbeRdr9.5.5-1_i486linux_enu.tar.bz2"
+        sha256: ee0ea9c65b38abd40ec7c92654e767dc138757f02aef5ae92f74e2dc75ac6540
+        size: 57127348
+
+      - type: script
+        dest-filename: acroread.sh
+        commands:
+          - exec /app/extra/Adobe/Reader9/bin/acroread
