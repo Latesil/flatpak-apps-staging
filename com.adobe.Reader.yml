@@ -61,20 +61,8 @@ modules:
       - install -Dm755 /usr/bin/desktop-file-edit -t /app/bin/
       - install -Dm644 ${FLATPAK_ID}.appdata.xml -t /app/share/appdata/
     sources:
-      - type: script
-        dest-filename: apply_extra.sh
-        commands:
-          - tar -xjf AdbeRdr.tar.bz2 --strip-components=1
-          - tar -xf ILINXR.TAR
-          - tar -xf COMMON.TAR
-          - ICONDIR=Adobe/Reader9/Resource/Icons; ls -1 $ICONDIR | while read -r s; do
-              install -Dm644 $ICONDIR/$s/AdobeReader9.png export/share/icons/hicolor/$s/apps/com.adobe.Reader.png;
-            done
-          - install -Dm644 Adobe/Reader9/Resource/Support/AdobeReader.desktop export/share/applications/com.adobe.Reader.desktop
-          - desktop-file-edit --remove-key=Caption export/share/applications/com.adobe.Reader.desktop
-          - desktop-file-edit --set-key=Icon --set-value=com.adobe.Reader export/share/applications/com.adobe.Reader.desktop
-          - desktop-file-edit --set-key=X-Flatpak-RenamedFrom --set-value="AdobeReader.desktop;" export/share/applications/com.adobe.Reader.desktop
-          - rm AdbeRdr.tar.bz2 ILINXR.TAR COMMON.TAR INSTALL
+      - type: file
+        path: apply_extra.sh
 
       - type: extra-data
         only-arches:
