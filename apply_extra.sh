@@ -1,15 +1,14 @@
-#!/bin/bash -x
+#!/bin/bash
 APP_ID="com.adobe.Reader"
 
 tar -xjf AdbeRdr.tar.bz2 --strip-components=1
 tar -xf ILINXR.TAR
 tar -xf COMMON.TAR
 
-icon_src_dir=Adobe/Reader9/Resource/Icons
-icon_sizes=($(ls -1 $icon_src_dir))
+resource="Adobe/Reader9/Resource"
 
 # App desktop entry
-install -Dm644 "Adobe/Reader9/Resource/Support/AdobeReader.desktop" "export/share/applications/${APP_ID}.desktop"
+install -Dm644 "$resource/Support/AdobeReader.desktop" "export/share/applications/${APP_ID}.desktop"
 desktop-file-edit --remove-key="Caption" \
     "export/share/applications/${APP_ID}.desktop"
 desktop-file-edit --set-key="Icon" --set-value="${APP_ID}" \
@@ -18,12 +17,13 @@ desktop-file-edit --set-key="X-Flatpak-RenamedFrom" --set-value="AdobeReader.des
     "export/share/applications/${APP_ID}.desktop"
 
 # App icon
+icon_sizes=($(ls -1 "$resource/Icons"))
 for s in "${icon_sizes[@]}"; do
-    install -Dm644 "$icon_src_dir/${s}/AdobeReader9.png" "export/share/icons/hicolor/${s}/apps/${APP_ID}.png"
+    install -Dm644 "$resource/Icons/${s}/AdobeReader9.png" "export/share/icons/hicolor/${s}/apps/${APP_ID}.png"
 done
 
 # Mimetypes
-install -Dm644 "Adobe/Reader9/Resource/Support/AdobeReader.xml" "export/share/mime/packages/${APP_ID}.xml"
+install -Dm644 "$resource/Support/AdobeReader.xml" "export/share/mime/packages/${APP_ID}.xml"
 for m in "pdf" "vnd.fdf" "vnd.adobe.pdx" "vnd.adobe.xdp+xml" "vnd.adobe.xfdf"; do
     if [ "$m" = "pdf" ]; then
         i="adobe.pdf"
@@ -33,7 +33,7 @@ for m in "pdf" "vnd.fdf" "vnd.adobe.pdx" "vnd.adobe.xdp+xml" "vnd.adobe.xfdf"; d
     sed "s|\(<mime-type type=\"application/${m}\">\)|\1\n    <icon name=\"${APP_ID}-${m}\"/>|g" \
         -i "export/share/mime/packages/${APP_ID}.xml"
     for s in "${icon_sizes[@]}"; do
-        install -Dm644 "$icon_src_dir/${s}/${i}.png" "export/share/icons/hicolor/${s}/mimetypes/${APP_ID}-${m}.png"
+        install -Dm644 "$resource/Icons/${s}/${i}.png" "export/share/icons/hicolor/${s}/mimetypes/${APP_ID}-${m}.png"
     done
 done
 
