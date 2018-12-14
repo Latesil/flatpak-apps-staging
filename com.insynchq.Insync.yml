@@ -1,0 +1,100 @@
+id: com.insynchq.Insync
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --share=network
+  - --socket=pulseaudio
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --own-name=org.kde.StatusNotifierItem-2-1
+  - --talk-name=org.gnome.SessionManager
+  - --env=LC_TIME=C
+command: insync
+modules:
+  - name: systemd
+    buildsystem: meson
+    config-opts:
+      - --buildtype=plain
+      - -Drootprefix=/app
+      - -Dsysconfdir=/app/etc
+      - -Denvironment-d=false
+      - -Dbinfmt=false
+      - -Dcoredump=false
+      - -Dlogind=false
+      - -Dhostnamed=false
+      - -Dlocaled=false
+      - -Dmachined=false
+      - -Dportabled=false
+      - -Dnetworkd=false
+      - -Dtimedated=false
+      - -Dtimesyncd=false
+      - -Dremote=false
+      - -Dfirstboot=false
+      - -Drandomseed=false
+      - -Dbacklight=false
+      - -Dvconsole=false
+      - -Dquotacheck=false
+      - -Dsysusers=false
+      - -Dtmpfiles=false
+      - -Dimportd=false
+      - -Dhwdb=false
+      - -Drfkill=false
+      - -Dman=false
+      - -Dhtml=false
+      - -Dpam=false
+      - -Dmicrohttpd=false
+      - -Dbashcompletiondir=no
+      - -Dzshcompletiondir=no
+    sources:
+      - type: archive
+        url: "https://github.com/systemd/systemd/archive/v239.tar.gz"
+        sha256: 8a11b1b07d620f4c06a16e95bba4dd2a97e90efdf2a5ba47ed0a935085787a14
+      - type: patch
+        path: 0001-meson-rename-Ddebug-to-Ddebug-extra.patch
+        strip-components: 1
+    cleanup:
+      - /bin
+      - /etc
+      - /lib/systemd
+      - /lib/sysctl.d
+      - /lib/udev/rules.d
+      - /lib/modprobe.d
+      - /lib/kernel
+      - /lib/rpm
+      - /share/polkit-1
+      - /share/dbus-1
+      - /share/factory
+
+  - name: insync
+    build-options:
+      strip: false
+      no-debuginfo: true
+    buildsystem: simple
+    build-commands:
+      - install -Dm755 apply_extra.sh /app/bin/apply_extra
+      - install -Dm755 insync.sh /app/bin/insync
+      - cp /usr/bin/ar /app/bin/
+      - cp /usr/lib/*-linux-gnu/libbfd-*.so /app/lib/
+      - cp /usr/bin/desktop-file-edit /app/bin/
+    sources:
+      - type: file
+        path: apply_extra.sh
+
+      - type: extra-data
+        filename: insync.deb
+        only-arches:
+          - "x86_64"
+        url: "https://d2t3ff60b2tol4.cloudfront.net/builds/insync_1.5.5.37367-artful_amd64.deb"
+        sha256: 7c44799c55faf4e4edda39d7b4dc12a62a3336dc01cb182abbaa033f4753a2dd
+        size: 144098408
+
+      - type: script
+        dest-filename: insync.sh
+        commands:
+          - cd /app/extra/insync/lib/insync
+          - exec ./insync $@
