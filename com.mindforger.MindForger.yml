@@ -1,0 +1,46 @@
+id: com.mindforger.MindForger
+sdk: org.kde.Sdk
+runtime: org.kde.Platform
+runtime-version: "5.11"
+base: io.qt.qtwebkit.BaseApp
+base-version: "5.11"
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+command: mindforger
+rename-desktop-file: mindforger.desktop
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /lib/cmake
+  - /lib/mkspecs
+modules:
+  - name: mindforger
+    buildsystem: qmake
+    builddir: true
+    build-options:
+      env:
+        QMAKEPATH: /app/lib
+    post-install:
+      - install -Dm755 app/mindforger -t /app/bin/ #FIXME Qmake doesn't install it, seems related to builddir
+      - install -Dm644 /app/share/icons/{mindforger/mindforger128x128,hicolor/128x128/apps/${FLATPAK_ID}}.png
+      - desktop-file-edit --set-key=Exec --set-value=mindforger /app/share/applications/mindforger.desktop
+      - desktop-file-edit --set-key=Icon --set-value=${FLATPAK_ID} /app/share/applications/mindforger.desktop
+    sources:
+      - type: git
+        url: "https://github.com/dvorka/mindforger.git"
+        tag: "1.48.2"
+
+      - type: patch
+        path: install_prefix.patch
+
+      - type: shell
+        commands:
+          - cd deps/discount; ./configure.sh --prefix=/app
+          - cd deps/discount; make -j $FLATPAK_BUILDER_N_JOBS
+    cleanup:
+      - /share/doc
+      - /share/man

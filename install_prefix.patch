@@ -1,0 +1,42 @@
+diff --git a/app/app.pro b/app/app.pro
+index 4d47065..b62cacf 100644
+--- a/app/app.pro
++++ b/app/app.pro
+@@ -297,7 +297,7 @@ RESOURCES += \
+ # See http://doc.qt.io/qt-5/qmake-advanced-usage.html
+ 
+ binfile.files += mindforger
+-binfile.path = /usr/bin/
++binfile.path = /app/bin/
+ INSTALLS += binfile
+ 
+ # ########################################
+diff --git a/mindforger.pro b/mindforger.pro
+index ae627f2..d4cb9e0 100644
+--- a/mindforger.pro
++++ b/mindforger.pro
+@@ -44,20 +44,20 @@ app.depends = lib
+ #IMPORTANT: binfile MUST be specified in app/app.pro (project next to/that builds binary)
+ 
+ docfiles.files += doc/*
+-docfiles.path = /usr/share/doc/mindforger/
++docfiles.path = /app/share/doc/mindforger/
+ INSTALLS += docfiles
+ 
+ manfiles.files += man/*
+-manfiles.path = /usr/share/man/man1/
++manfiles.path = /app/share/man/man1/
+ INSTALLS += manfiles
+ 
+ iconfiles.files += app/resources/icons/*
+-iconfiles.path = /usr/share/icons/mindforger/
++iconfiles.path = /app/share/icons/mindforger/
+ INSTALLS += iconfiles
+ 
+ # experiment w/ file
+ shortcutfiles.files += app/resources/gnome-shell/mindforger.desktop
+-shortcutfiles.path = /usr/share/applications/
++shortcutfiles.path = /app/share/applications/
+ INSTALLS += shortcutfiles
+ 
+ # eof
