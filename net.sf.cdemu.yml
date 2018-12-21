@@ -1,0 +1,71 @@
+id: net.sf.cdemu
+sdk: org.gnome.Sdk
+runtime: org.gnome.Platform
+runtime-version: "3.30"
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=all
+  - --socket=pulseaudio
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.gtk.vfs
+  - --talk-name=org.gtk.vfs.*
+command: cdemu
+rename-icon: gcdemu
+rename-desktop-file: gcdemu.desktop
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /share/aclocal
+  - /share/man
+  - /share/doc
+  - /share/gtk-doc
+modules:
+  - name: libmirage
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DGTKDOC_ENABLED=OFF
+    post-install:
+      - for f in /app/share/mime/packages/*.xml; do
+          rename -v libmirage- ${FLATPAK_ID}-libmirage- $f ;
+        done
+    sources:
+      - type: archive
+        url: "https://downloads.sourceforge.net/cdemu/libmirage-3.2.0.tar.bz2"
+        sha256: 795916c20ad87e8b83f918a28c492b5392532e7ce8367110b9f476a7c780b7f9
+
+  - name: cdemu-daemon
+    buildsystem: cmake-ninja
+    sources:
+      - type: archive
+        url: "https://downloads.sourceforge.net/cdemu/cdemu-daemon-3.2.1.tar.bz2"
+        sha256: 842d889094be45fb913ee6649cba8f12e6190e83497764536bc63d1c3fc3389c
+    modules:
+
+      - name: libao
+        config-opts:
+          - --enable-pulse
+          - --disable-alsa
+        sources:
+          - type: archive
+            url: "http://downloads.xiph.org/releases/ao/libao-1.2.0.tar.gz"
+            sha256: 03ad231ad1f9d64b52474392d63c31197b0bc7bd416e58b1c10a329a5ed89caf
+
+  - name: cdemu-client
+    buildsystem: cmake-ninja
+    sources:
+      - type: archive
+        url: "https://downloads.sourceforge.net/cdemu/cdemu-client-3.2.0.tar.bz2"
+        sha256: a9fea8c54433b6827ea23e13cb10b931609854370afd99a69bea8a750f4a9fff
+
+  - name: gcdemu
+    buildsystem: cmake-ninja
+    post-install:
+      - install -Dm644 /app/share/{pixmaps,icons/hicolor/scalable/apps}/gcdemu.svg
+    sources:
+      - type: archive
+        url: "https://downloads.sourceforge.net/cdemu/gcdemu-3.2.0.tar.bz2"
+        sha256: 6cd6b6f22b329bf487f07189050d1750161ecf99a532ce3a85211809fe57a418
