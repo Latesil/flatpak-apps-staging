@@ -1,0 +1,48 @@
+id: org.kde.falkon
+sdk: org.kde.Sdk
+runtime: org.kde.Platform
+runtime-version: "5.12"
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+  - --share=network
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.kde.kwalletd5
+  - --system-talk-name=org.freedesktop.GeoClue2
+  - --system-talk-name=net.connman
+  - --system-talk-name=org.freedesktop.NetworkManager
+  - --filesystem=xdg-download
+rename-icon: falkon
+command: falkon
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /lib/cmake
+  - /share/man
+modules:
+
+  - name: falkon
+    buildsystem: cmake-ninja
+    sources:
+      - type: archive
+        url: "https://download.kde.org/stable/falkon/3.0.1/falkon-3.0.1.tar.xz"
+        sha256: 7b6ed54986543dd5462602943fb824df12f15d2061996310c4c4b891433f1a83
+    modules:
+
+      - name: libgnome-keyring
+        config-opts:
+          - --disable-static
+          - --disable-gtk-doc
+          - --disable-coverage
+          - --disable-introspection
+        sources:
+          - type: archive
+            url: "https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz"
+            sha256: c4c178fbb05f72acc484d22ddb0568f7532c409b0a13e06513ff54b91e947783
