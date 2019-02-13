@@ -1,0 +1,29 @@
+id: org.segaretro.Gens-GS-II
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+command: gens-sdl
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=all
+  - --socket=pulseaudio
+modules:
+  - shared-modules/glu/glu-9.0.0.json
+
+  - name: gens-gs-ii
+    buildsystem: cmake
+    builddir: true
+    config-opts:
+      - -DENABLE_GENS_QT4=ON
+      - -DSPLIT_DEBUG=OFF
+    no-make-install: true
+    post-install:
+      - install -Dm755 src/gens-sdl/gens-sdl -t /app/bin/
+    sources:
+      - type: git
+        url: "git://dusers.drexel.edu/srv/git/~korth/gens-gs-ii.git"
+
+      - type: patch
+        path: 0001-include-string.patch

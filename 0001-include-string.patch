@@ -1,0 +1,24 @@
+From 0c4832d2a5aa8da4fc8eb75768200cca9d7c848e Mon Sep 17 00:00:00 2001
+From: gasinvein <gasinvein@gmail.com>
+Date: Wed, 13 Feb 2019 18:35:03 +0300
+Subject: [PATCH] include string
+
+---
+ src/libgensfile/Archive.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/libgensfile/Archive.hpp b/src/libgensfile/Archive.hpp
+index 95a978e2..841ae780 100644
+--- a/src/libgensfile/Archive.hpp
++++ b/src/libgensfile/Archive.hpp
+@@ -47,6 +47,7 @@
+ #include <cstdio>
+ // C++ includes.
+ #include <algorithm>
++#include <string>
+ 
+ // TODO: Use the MDP headers for mdp_z_entry_t.
+ #ifdef __cplusplus
+-- 
+2.20.1
+
