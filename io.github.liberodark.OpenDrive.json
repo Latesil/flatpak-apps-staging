@@ -1,0 +1,60 @@
+{
+  "app-id": "io.github.liberodark.OpenDrive",
+  "base": "io.atom.electron.BaseApp",
+  "base-version": "18.08",
+  "command": "odrive",
+  "rename-desktop-file": "odrive.desktop",
+  "rename-icon": "odrive",
+  "runtime": "org.freedesktop.Platform",
+  "runtime-version": "18.08",
+  "sdk": "org.freedesktop.Sdk",
+  "separate-locales": false,
+  "finish-args": [
+    "--device=all",
+    "--device=dri",
+    "--env=XDG_CURRENT_DESKTOP=Unity",
+    "--filesystem=home",
+    "--share=ipc",
+    "--share=network",
+    "--socket=x11",
+    "--talk-name=com.canonical.AppMenu.Registrar",
+    "--talk-name=org.freedesktop.Notifications",
+    "--talk-name=org.kde.StatusNotifierWatcher"
+  ],
+  "modules": [
+    {
+      "name": "odrive",
+      "buildsystem": "simple",
+      "build-commands": [
+        "ar -x odrive*.deb",
+        "tar -xf data.tar.xz",
+        "cp -r opt/* usr/* /app/",
+        "desktop-file-edit --set-key=Exec --set-value=\"/app/bin/odrive %U\" /app/share/applications/odrive.desktop",
+        "install -D -m0755 odrive.sh /app/bin/odrive",
+        "install -D -m0644 -t /app/share/metainfo/ io.github.liberodark.OpenDrive.appdata.xml"
+      ],
+      "sources": [
+        {
+          "type": "file",
+          "only-arches": ["x86_64"],
+          "sha256": "31fac62a0b9b8d840708e9243f72fa260ca66e716f1af1b4844fa4f0876d57d7",
+          "url": "https://github.com/liberodark/ODrive/releases/download/0.2.0/odrive_0.2.0_amd64.deb"
+        },
+        {
+          "type": "file",
+          "sha256": "5e239502937711d6609eacccdcc332a2f0c8d92412d7461439ce00bf180dfaf2",
+          "url": "https://github.com/liberodark/ODrive/archive/0.2.0.tar.gz"
+        },
+        {
+          "type": "file",
+          "path": "io.github.liberodark.OpenDrive.appdata.xml"
+        },
+        {
+          "type": "script",
+          "commands": ["exec env TMPDIR=${XDG_CACHE_HOME}/tmp/ /app/OpenDrive/odrive \"$@\""],
+          "dest-filename": "odrive.sh"
+        }
+      ]
+    }
+  ]
+}
