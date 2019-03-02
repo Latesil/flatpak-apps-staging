@@ -23,27 +23,79 @@
   ],
   "modules": [
     {
-      "name": "odrive",
+      "name": "nodejs",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://nodejs.org/dist/v8.15.1/node-v8.15.1.tar.gz",
+          "sha256": "413e0086bd3abde2dfdd3a905c061a6188cc0faceb819768a53ca9c6422418b4"
+        }
+      ],
+      "cleanup": [
+        "*"
+      ]
+    },
+    {
+      "name": "yarn",
       "buildsystem": "simple",
       "build-commands": [
-        "ar -x odrive*.deb",
-        "tar -xf data.tar.xz",
-        "cp -r opt/* usr/* /app/",
-        "desktop-file-edit --set-key=Exec --set-value=\"/app/bin/odrive %U\" /app/share/applications/odrive.desktop",
+        "mkdir -p /app/share/yarn",
+        "cp -a * /app/share/yarn/",
+        "ln -s /app/share/yarn/bin/yarn /app/bin/yarn",
+        "ln -s /app/share/yarn/bin/yarnpkg /app/bin/yarnpkg"
+      ],
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/yarnpkg/yarn/releases/download/v1.3.2/yarn-v1.3.2.tar.gz",
+          "sha256": "6cfe82e530ef0837212f13e45c1565ba53f5199eec2527b85ecbcd88bf26821d"
+        }
+      ],
+      "cleanup": [
+        "*"
+      ]
+    },
+    {
+      "name": "odrive",
+      "buildsystem": "simple",
+      "build-options" : {
+        "env": {
+          "electron_config_cache": "/run/build/odrive/electron-cache",
+          "ELECTRON_CACHE": "/run/build/odrive/electron-cache",
+          "JOBS": "max"
+        }
+      },
+      "build-commands": [
+        "yarn --cwd /run/build/odrive/main --offline install",
+        "yarn --cwd /run/build/odrive/main --offline run release-linux dir",
+        "cp -r main/dist/linux-unpacked /app/OpenDrive",
+        "for s in 32 48 64 128 256 512; do d=/app/share/icons/hicolor/${s}x${s}/apps; mkdir -p $d; rsvg-convert -w ${s} -h ${s} -o $d/odrive.png main/public/images/logo.svg; done",
+        "install -Dm644 odrive.desktop -t /app/share/applications/",
         "install -D -m0755 odrive.sh /app/bin/odrive",
         "install -D -m0644 -t /app/share/metainfo/ io.github.liberodark.OpenDrive.appdata.xml"
       ],
       "sources": [
         {
-          "type": "file",
-          "only-arches": ["x86_64"],
-          "sha256": "31fac62a0b9b8d840708e9243f72fa260ca66e716f1af1b4844fa4f0876d57d7",
-          "url": "https://github.com/liberodark/ODrive/releases/download/0.2.0/odrive_0.2.0_amd64.deb"
+          "type": "archive",
+          "url": "https://github.com/liberodark/ODrive/archive/0.2.1.tar.gz",
+          "sha256": "f2aa90455dc29bddbe683bef1b13e23c886a78db0b6f7d02f5bb766ac19d70a9",
+          "dest": "main"
         },
         {
           "type": "file",
-          "sha256": "5e239502937711d6609eacccdcc332a2f0c8d92412d7461439ce00bf180dfaf2",
-          "url": "https://github.com/liberodark/ODrive/archive/0.2.0.tar.gz"
+          "path": "yarn.lock",
+          "dest": "main"
+        },
+        {
+          "type": "file",
+          "path": "yarnrc",
+          "dest": "main",
+          "dest-filename": ".yarnrc"
+        },
+        "generated-sources.json",
+        {
+          "type": "file",
+          "path": "odrive.desktop"
         },
         {
           "type": "file",
