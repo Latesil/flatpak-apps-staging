@@ -9,7 +9,7 @@
   "separate-locales": false,
   "finish-args": [
     "--device=dri",
-    "--filesystem=home",
+    "--filesystem=~/OpenDrive:create",
     "--share=ipc",
     "--share=network",
     "--socket=x11",
@@ -61,7 +61,7 @@
         "yarn --cwd /run/build/odrive/main --offline install",
         "yarn --cwd /run/build/odrive/main --offline run release-linux dir",
         "cp -r main/dist/linux-unpacked /app/OpenDrive",
-        "for s in 32 48 64 128 256 512; do d=/app/share/icons/hicolor/${s}x${s}/apps/; mkdir -p $d; rsvg-convert -w ${s} -h ${s} -o $d/${FLATPAK_ID}.png main/public/images/logo.svg; done",
+        "for size in 32 48 64 128 256 512; do rsvg-convert -f png -h ${size} -w ${size} -o ${size}.png main/public/images/logo.svg; install -D -m644 ${size}.png /app/share/icons/hicolor/${size}x${size}/apps/${FLATPAK_ID}.png; done",
         "install -D -m0755 odrive.sh /app/bin/odrive",
         "install -D -m0644 -t /app/share/applications/ ${FLATPAK_ID}.desktop",
         "install -D -m0644 -t /app/share/metainfo/ ${FLATPAK_ID}.appdata.xml"
