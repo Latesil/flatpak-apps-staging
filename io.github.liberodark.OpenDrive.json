@@ -65,7 +65,7 @@
       "build-commands": [
         "yarn --cwd /run/build/odrive/main --offline install",
         "yarn --cwd /run/build/odrive/main --offline run release-linux dir",
-        "cp -r main/dist/linux-unpacked /app/OpenDrive",
+        "cp -r main/dist/linux{-ia32}-unpacked /app/OpenDrive",
         "for size in 32 48 64 128 256 512; do rsvg-convert -f png -h ${size} -w ${size} -o ${size}.png main/public/images/logo.svg; install -D -m644 ${size}.png /app/share/icons/hicolor/${size}x${size}/apps/${FLATPAK_ID}.png; done",
         "install -D -m0755 odrive.sh /app/bin/odrive",
         "install -D -m0644 -t /app/share/applications/ ${FLATPAK_ID}.desktop",
