@@ -82,8 +82,9 @@
         {
           "type": "shell",
           "dest": "electron-cache",
+          "only-arches": [ "arm" ],
           "commands": [
-            "ln -s electron-v2.0.17-linux-{arm,armv7l}.zip"
+            "for f in electron-*-linux-arm.zip; do  ln -s $f ${f/arm/armv7l}; done"
           ]
         },
         {
