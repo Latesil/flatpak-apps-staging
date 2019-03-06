@@ -1672,7 +1672,7 @@
     },
     {
         "type": "file",
-        "url": "data:623c9477321e3b49ed5b8bdbdc5aee60c7773cfaefe9955e7fb48e63ac63851f%20%2Aelectron-v2.0.17-linux-ia32.zip%0A53c82f0b83fee1fb69425ce86e9bf93d2f590e90354a8bb6b9e8bb460f35cd19%20%2Aelectron-v2.0.17-linux-x64.zip%0A4a2cc4cc986315920ab1647d12ae39bfdf3267b0d549420d7d5d28d56ae059f6%20%2Aelectron-v2.0.17-linux-arm.zip%0A",
+        "url": "data:623c9477321e3b49ed5b8bdbdc5aee60c7773cfaefe9955e7fb48e63ac63851f%20%2Aelectron-v2.0.17-linux-ia32.zip%0A53c82f0b83fee1fb69425ce86e9bf93d2f590e90354a8bb6b9e8bb460f35cd19%20%2Aelectron-v2.0.17-linux-x64.zip%0A4a2cc4cc986315920ab1647d12ae39bfdf3267b0d549420d7d5d28d56ae059f6%20%2Aelectron-v2.0.17-linux-arm.zip%0A4a2cc4cc986315920ab1647d12ae39bfdf3267b0d549420d7d5d28d56ae059f6%20%2Aelectron-v2.0.17-linux-arm64.zip%0A",
         "dest": "electron-cache",
         "dest-filename": "SHASUMS256.txt-2.0.17"
     },
