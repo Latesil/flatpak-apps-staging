@@ -1,0 +1,32 @@
+id: io.github.mmstick.SystemdManager
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: systemd-manager
+rename-desktop-file: systemd-manager.desktop
+modules:
+
+  - name: systemd-manager
+    build-options:
+      append-path : /usr/lib/sdk/rust-stable/bin
+      env:
+        CARGO_HOME: /run/build/systemd-manager/cargo
+    buildsystem: simple
+    build-commands:
+      - cargo build --release -j ${FLATPAK_BUILDER_N_JOBS}
+      - cargo install --path . --root /app
+    post-install:
+      - install -Dm644 assets/systemd-manager.desktop -t /app/share/applications/
+      - desktop-file-edit --set-key=Exec --set-value=systemd-manager /app/share/applications/systemd-manager.desktop
+    sources:
+      - type: git
+        url: "https://github.com/mmstick/systemd-manager.git"
+      - generated-sources.json
