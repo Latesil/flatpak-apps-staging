@@ -1,0 +1,47 @@
+id: io.github.jwilm.Alacritty
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: alacritty
+rename-desktop-file: alacritty.desktop
+rename-icon: alacritty
+modules:
+
+  - name: alacritty
+    build-options:
+      append-path : /usr/lib/sdk/rust-stable/bin
+      env:
+        CARGO_HOME: /run/build/alacritty/cargo
+    buildsystem: simple
+    build-commands:
+      - cargo build --release -j ${FLATPAK_BUILDER_N_JOBS}
+      - cargo install --path . --root /app
+    post-install:
+      - install -Dm644 alacritty.desktop -t /app/share/applications
+      - icns2png -x assets/osx/Alacritty.app/Contents/Resources/alacritty.icns
+      - |
+        for size in 16x16 32x32 256x256 512x512; do
+          install -Dm644 alacritty_${size}x32.png /app/share/icons/hicolor/${size}/apps/alacritty.png
+        done
+    sources:
+      - type: archive
+        url: "https://github.com/jwilm/alacritty/archive/v0.2.9.tar.gz"
+        sha256: 0261d427bd93262403c3acdda6ebcb06c6a37062124e96fe2b29ff3104cb3089
+      - generated-sources.json
+    modules:
+
+      - name: libicns
+        cleanup:
+          - "*"
+        sources:
+          - type: archive
+            url: "http://downloads.sourceforge.net/icns/libicns-0.8.1.tar.gz"
+            sha256: 335f10782fc79855cf02beac4926c4bf9f800a742445afbbf7729dab384555c2
