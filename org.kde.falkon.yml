@@ -32,8 +32,8 @@ modules:
     buildsystem: cmake-ninja
     sources:
       - type: archive
-        url: "https://download.kde.org/stable/falkon/3.0.1/falkon-3.0.1.tar.xz"
-        sha256: 7b6ed54986543dd5462602943fb824df12f15d2061996310c4c4b891433f1a83
+        url: "https://download.kde.org/stable/falkon/3.1/falkon-3.1.0.tar.xz"
+        sha256: ce743cd80c0e2d525a784e29c9b487f73480119b0567f9ce8ef1f44cca527587
     modules:
 
       - name: libgnome-keyring
@@ -46,3 +46,10 @@ modules:
           - type: archive
             url: "https://download.gnome.org/sources/libgnome-keyring/3.12/libgnome-keyring-3.12.0.tar.xz"
             sha256: c4c178fbb05f72acc484d22ddb0568f7532c409b0a13e06513ff54b91e947783
+
+      - name: kf5-purpose
+        buildsystem: cmake-ninja
+        sources:
+          - type: archive
+            url: "https://download.kde.org/stable/frameworks/5.56/purpose-5.56.0.tar.xz"
+            sha256: 882aa64c55e134d1aff06d533f8c3c6f8e5886b5b782925e1aad2e0ca7e37e67
