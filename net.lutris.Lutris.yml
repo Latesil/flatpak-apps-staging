@@ -1,7 +1,7 @@
 id: net.lutris.Lutris
-sdk: org.gnome.Sdk
-runtime: org.gnome.Platform
-runtime-version: "3.32"
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
 command: lutris
 rename-icon: lutris
 finish-args:
@@ -43,18 +43,6 @@ cleanup:
 cleanup-commands:
   - python3 -m compileall /app/lib
 modules:
-
-  - name: pciutils
-    no-autogen: true
-    make-args:
-      - OPT=-O2 -g
-    make-install-args:
-      - PREFIX=/app
-      - SBINDIR=/app/bin
-    sources:
-      - type: archive
-        url: "https://mirrors.edge.kernel.org/pub/software/utils/pciutils/pciutils-3.6.2.tar.gz"
-        sha256: d5f9254f27bbda8243b345633e980144e6bd2af9c786bb8a152b904530aef599
 
   - name: lutris
     buildsystem: simple
@@ -147,6 +135,21 @@ modules:
           - type: archive
             url: "https://github.com/python-pillow/Pillow/archive/5.4.1.tar.gz"
             sha256: d233c2e63414535281c572d2b4debd7de8a205b341ffc7db0f48f3f4d199fbc0
+
+      - name: pygobject
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: "https://ftp.gnome.org/pub/gnome/sources/pygobject/3.32/pygobject-3.32.0.tar.xz"
+            sha256: 83f4d7e59fde6bc6b0d39c5e5208574802f759bc525a4cb8e7265dfcba45ef29
+        modules:
+
+          - name: pycairo
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: "https://github.com/pygobject/pycairo/releases/download/v1.17.1/pycairo-1.17.1.tar.gz"
+                sha256: 0f0a35ec923d87bc495f6753b1e540fd046d95db56a35250c44089fbce03b698
 
   - name: lutris-app-environment
     buildsystem: simple
