@@ -58,7 +58,9 @@ modules:
         url: "https://github.com/lutris/lutris.git"
         tag: v0.5.1
       - type: patch
-        path: 0001-Add-flatpak-ed-Steam-data-dir.patch
+        path: patches/0001-Add-flatpak-ed-Steam-data-dir.patch
+      - type: patch
+        path: patches/0002-Use-xdg-open-to-run-Steam-games-if-running-in-flatpa.patch
     modules:
 
       - name: gnome-desktop

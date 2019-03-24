@@ -1,0 +1,52 @@
+From 3f3255751bde9dc25f99a56e53c77dd76a3e0eea Mon Sep 17 00:00:00 2001
+From: gasinvein <gasinvein@gmail.com>
+Date: Sun, 24 Mar 2019 18:03:31 +0300
+Subject: [PATCH] Use xdg-open to run Steam games if running in flatpak
+
+---
+ lutris/runners/steam.py | 3 +++
+ lutris/util/linux.py    | 7 +++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/lutris/runners/steam.py b/lutris/runners/steam.py
+index e0a1b1e4..651b2fb3 100644
+--- a/lutris/runners/steam.py
++++ b/lutris/runners/steam.py
+@@ -188,6 +188,9 @@ class steam(Runner):
+                 return path[: -len("SteamApps")]
+ 
+     def get_executable(self):
++        if system.LINUX_SYSTEM.is_flatpak:
++            # Use xdg-open for Steam URIs in Flatpak
++            return system.find_executable("xdg-open")
+         if self.runner_config.get("lsi_steam") and system.find_executable("lsi-steam"):
+             return system.find_executable("lsi-steam")
+         runner_executable = self.runner_config.get("runner_executable")
+diff --git a/lutris/util/linux.py b/lutris/util/linux.py
+index c96f9297..02239abc 100644
+--- a/lutris/util/linux.py
++++ b/lutris/util/linux.py
+@@ -104,6 +104,8 @@ class LinuxSystem:
+     required_components = ["OPENGL"]
+     optional_components = ["VULKAN", "WINE", "GAMEMODE"]
+ 
++    flatpak_info_path="/.flatpak-info"
++
+     def __init__(self):
+         for key in ("COMMANDS", "TERMINALS"):
+             self._cache[key] = {}
+@@ -200,6 +202,11 @@ class LinuxSystem:
+             return "armv7"
+         logger.warning("Unsupported architecture %s", machine)
+ 
++    @property
++    def is_flatpak(self):
++        """Check is we are running inside Flatpak sandbox"""
++        return os.path.exists(self.flatpak_info_path)
++
+     @property
+     def runtime_architectures(self):
+         if self.arch == "x86_64":
+-- 
+2.20.1
+
