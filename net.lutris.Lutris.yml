@@ -25,10 +25,12 @@ add-extensions:
   org.freedesktop.Platform.Compat.i386:
     directory: lib/i386-linux-gnu
     version: "18.08"
+
   org.freedesktop.Platform.Compat.i386.Debug:
     directory: lib/debug/lib/i386-linux-gnu
     version: "18.08"
     no-autodownload: true
+
   org.freedesktop.Platform.GL32:
     directory: lib/i386-linux-gnu/GL
     version: "1.4"
@@ -40,6 +42,15 @@ add-extensions:
     merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors
     download-if: active-gl-driver
     enable-if: active-gl-driver
+
+  net.lutris.Lutris.wine:
+    directory: wine
+    add-ld-path: lib
+
+  net.lutris.Lutris.wine.compat32:
+    directory: wine/compat32
+    add-ld-path: lib
+
 cleanup:
   - "*.a"
   - "*.la"
@@ -149,11 +160,6 @@ modules:
             url: "https://github.com/python-pillow/Pillow/archive/5.4.1.tar.gz"
             sha256: d233c2e63414535281c572d2b4debd7de8a205b341ffc7db0f48f3f4d199fbc0
 
-  - name: lutris-app-environment
-    buildsystem: simple
-    build-commands:
-      - mkdir -p /app/lib/i386-linux-gnu
-
   - name: hwdata
     config-opts:
       - --datarootdir=/app/share
@@ -200,3 +206,9 @@ modules:
       - type: archive
         url: "https://xorg.freedesktop.org/archive/individual/app/xrandr-1.5.0.tar.bz2"
         sha256: c1cfd4e1d4d708c031d60801e527abc9b6d34b85f2ffa2cadd21f75ff38151cd
+
+  - name: lutris-app-environment
+    buildsystem: simple
+    build-commands:
+      - mkdir -p /app/lib/i386-linux-gnu
+      - mkdir -p /app/wine
