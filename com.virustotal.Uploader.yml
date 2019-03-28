@@ -1,7 +1,7 @@
 id: com.virustotal.Uploader
 sdk: org.kde.Sdk
 runtime: org.kde.Platform
-runtime-version: '5.11'
+runtime-version: "5.12"
 command: VirusTotalUploader
 finish-args:
   - --share=ipc
@@ -18,8 +18,8 @@ modules:
   - name: jansson
     sources:
       - type: archive
-        url: "https://github.com/akheron/jansson/archive/v2.11.tar.gz"
-        sha256: 6ff0eab3a8baf64d21cae25f88a0311fb282006eb992080722a9099469c32881
+        url: "https://github.com/akheron/jansson/archive/v2.12.tar.gz"
+        sha256: 76260d30e9bbd0ef392798525e8cd7fe59a6450c54ca6135672e3cd6a1642941
       - type: script
         dest-filename: autogen.sh
         commands:
@@ -47,7 +47,7 @@ modules:
     sources:
       - type: git
         url: "https://github.com/VirusTotal/qt-virustotal-uploader.git"
-        commit: 5ef9e18
+        commit: 7ee9b45
       - type: file
         path: com.virustotal.Uploader.desktop
       - type: file
