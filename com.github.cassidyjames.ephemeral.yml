@@ -27,7 +27,7 @@ modules:
     sources:
       - type: git
         url: "https://github.com/cassidyjames/ephemeral.git"
-        tag: "3.0.0"
+        tag: "5.0.2"
     modules:
 
         - name: granite
