@@ -1,7 +1,7 @@
 id: com.github.cassidyjames.ephemeral
 sdk: org.gnome.Sdk
 runtime: org.gnome.Platform
-runtime-version: "3.30"
+runtime-version: "3.32"
 finish-args:
   - --share=ipc
   - --socket=x11
@@ -27,23 +27,18 @@ modules:
     sources:
       - type: git
         url: "https://github.com/cassidyjames/ephemeral.git"
-        tag: "5.0.2"
+        tag: "5.0.3"
     modules:
 
         - name: granite
-          buildsystem: cmake-ninja
-          config-opts:
-            - -DCMAKE_BUILD_TYPE=RelWithDebInfo
-            - -DCMAKE_INSTALL_LIBDIR=/app/lib
-            - -DINTROSPECTION_GIRDIR=/app/share/gir-1.0
-            - -DINTROSPECTION_TYPELIBDIR=/app/lib/girepository-1.0
+          buildsystem: meson
           cleanup:
             - /bin
             - /share/applications
           sources:
             - type: archive
-              url: "https://github.com/elementary/granite/archive/5.2.2.tar.gz"
-              sha256: a2bfb717570b2b7ffef8715fae0dcabe7e3de21f6cb9392f1184a57ae6436f6c
+              url: "https://github.com/elementary/granite/archive/5.2.3.tar.gz"
+              sha256: 6ff86a90896690d25016e80e5192f87f6e9045e35ccc1db4747b92086d9b492f
           modules:
 
             - name: libgee
