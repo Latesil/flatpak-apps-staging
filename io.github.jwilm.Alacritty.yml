@@ -25,23 +25,16 @@ modules:
       - cargo build --release -j ${FLATPAK_BUILDER_N_JOBS}
       - cargo install --path . --root /app
     post-install:
-      - install -Dm644 alacritty.desktop -t /app/share/applications
-      - icns2png -x assets/osx/Alacritty.app/Contents/Resources/alacritty.icns
+      - install -Dm644 extra/linux/alacritty.desktop -t /app/share/applications/
+      - install -Dm644 extra/logo/alacritty-term.svg /app/share/icons/hicolor/scalable/apps/alacritty.svg
       - |
-        for size in 16x16 32x32 256x256 512x512; do
-          install -Dm644 alacritty_${size}x32.png /app/share/icons/hicolor/${size}/apps/alacritty.png
+        for s in 16 32 64 128 256 512; do
+          icondir=/app/share/icons/hicolor/${s}x${s}/apps
+          mkdir -p ${icondir}
+          rsvg-convert -w ${s} -a -o ${icondir}/alacritty.png extra/logo/alacritty-term.svg
         done
     sources:
       - type: archive
-        url: "https://github.com/jwilm/alacritty/archive/v0.2.9.tar.gz"
-        sha256: 0261d427bd93262403c3acdda6ebcb06c6a37062124e96fe2b29ff3104cb3089
+        url: "https://github.com/jwilm/alacritty/archive/v0.3.2.tar.gz"
+        sha256: e2bc5323d505d9d487b2fdfc29f82a77e18b17f92de3988742950471808272f7
       - generated-sources.json
-    modules:
-
-      - name: libicns
-        cleanup:
-          - "*"
-        sources:
-          - type: archive
-            url: "http://downloads.sourceforge.net/icns/libicns-0.8.1.tar.gz"
-            sha256: 335f10782fc79855cf02beac4926c4bf9f800a742445afbbf7729dab384555c2
