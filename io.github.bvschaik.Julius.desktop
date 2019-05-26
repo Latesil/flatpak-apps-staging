@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Julius
+Exec=julius
+Terminal=false
+Icon=io.github.bvschaik.Julius
+Categories=Game
+X-Flatpak-RenamedFrom=julius.desktop

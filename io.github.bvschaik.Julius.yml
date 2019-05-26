@@ -1,0 +1,43 @@
+id: io.github.bvschaik.Julius
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Platform
+runtime-version: "18.08"
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+command: julius
+modules:
+
+  - name: julius
+    buildsystem: cmake-ninja
+    builddir: true
+    build-options:
+      env:
+        CC: clang
+        CXX: clang++
+    post-install:
+      - |
+        for s in 48 256 512; do
+          install -Dm644 ../res/julius_${s}.png /app/share/icons/hicolor/${s}x${s}/apps/${FLATPAK_ID}.png
+        done
+    sources:
+      - type: git
+        url: "https://github.com/bvschaik/julius.git"
+        tag: v1.1.0
+
+  - name: xprop
+    sources:
+      - type: archive
+        url: "https://www.x.org/archive/individual/app/xprop-1.2.4.tar.gz"
+        sha256: dddb6e208ffa515e68f001c22077a465f1365a4bcf91d9b37f336a6c0d15400d
+
+  - name: julius-metadata
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 ${FLATPAK_ID}.desktop -t /app/share/applications/
+    sources:
+      - type: file
+        path: io.github.bvschaik.Julius.desktop
