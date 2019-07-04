@@ -85,20 +85,9 @@ modules:
           ;;
         esac
     sources: &wine_sources
-      - type: archive
-        url: "https://dl.winehq.org/wine/source/4.x/wine-4.11.tar.xz"
-        sha256: 2e515766d59d3afdfd5f8d0eb29eb1d1d4ae84969c0a7a7eb4427feb2977bee6
-      - type: archive
-        url: "https://github.com/wine-staging/wine-staging/archive/v4.11.tar.gz"
-        sha256: b51f70d25c89279bb3752938d9fb4f3f281742f642bf139703768cc524c6fde0
-        dest: staging
-      - type: shell
-        commands:
-          - ./staging/patches/patchinstall.sh DESTDIR="$(pwd)" --all
-            -W xaudio2-revert
-            -W xaudio2_CommitChanges
-            -W xaudio2_7-CreateFX-FXEcho
-            -W xaudio2_7-WMA_support
+      - type: git
+        url: "https://github.com/lutris/wine.git"
+        branch: tkg
     modules:
 
       - name: vkd3d
