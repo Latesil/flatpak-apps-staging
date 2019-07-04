@@ -1,60 +1,32 @@
-id: org.winehq.Wine
-sdk: org.freedesktop.Sdk
-runtime: org.freedesktop.Platform
-runtime-version: "19.08beta"
-finish-args:
-  - --share=ipc
-  - --socket=x11
-  - --socket=wayland
-  - --device=all
-  - --socket=pulseaudio
-  - --share=network
-  - --allow=multiarch
-  - --allow=devel
-  - --env=WINEPREFIX=/var/data/wine
-command: wine
-rename-desktop-file: wine.desktop
-
-add-extensions:
-  org.freedesktop.Platform.Compat.i386:
-    directory: lib/i386-linux-gnu
-    version: "19.08beta"
-
-  org.freedesktop.Platform.Compat.i386.Debug:
-    directory: lib/debug/lib/i386-linux-gnu
-    version: "19.08beta"
-    no-autodownload: true
-
-  org.freedesktop.Platform.GL32:
-    directory: lib/i386-linux-gnu/GL
-    version: "1.4"
-    versions: "19.08beta;1.6;1.4"
-    subdirectories: true
-    no-autodownload: true
-    autodelete: false
-    add-ld-path: lib
-    merge-dirs: vulkan/icd.d;glvnd/egl_vendor.d;OpenCL/vendors;
-    download-if: active-gl-driver
-    enable-if: active-gl-driver
-
-  org.winehq.Wine.gecko:
-    directory: share/wine/gecko
-
-  org.winehq.Wine.mono:
-    directory: share/wine/mono
+id: net.lutris.Lutris.Wine
+sdk: org.freedesktop.Sdk//19.08beta
+runtime: net.lutris.Lutris
+build-extension: true
 
 sdk-extensions:
   - org.freedesktop.Sdk.Compat.i386
   - org.freedesktop.Sdk.Extension.toolchain-i386
 
+build-options:
+  prefix: /app/wine
+  prepend-path: /app/wine/bin
+  env:
+    C_INCLUDE_PATH: /app/wine/include
+    CPLUS_INCLUDE_PATH: /app/wine/include
+  strip: true
+  # This is appended and not prepended because otherwise it becomes first
+  # for compat32 modules, too.
+  append-pkg-config-path: /app/wine/lib/pkgconfig
+  ldflags: -L/app/wine/lib
+
 x-compat-i386-opts: &compat_i386_opts
-  prepend-pkg-config-path: /app/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
-  ldflags: -L/app/lib32
+  prepend-pkg-config-path: /app/wine/lib32/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig
+  ldflags: -L/app/wine/lib32
   append-path: /usr/lib/sdk/toolchain-i386/bin
   env:
     CC: i686-unknown-linux-gnu-gcc
     CXX: i686-unknown-linux-gnu-g++
-  libdir: /app/lib32
+  libdir: /app/wine/lib32
 
 cleanup:
   - "*.a"
@@ -89,7 +61,7 @@ modules:
         x86_64:
           config-opts:
             - --enable-win64
-          libdir: /app/lib
+          libdir: /app/wine/lib
     config-opts: &wine_common_opts
       - --disable-win16
       - --disable-tests
@@ -223,10 +195,10 @@ modules:
       - name: gsm
         build-options:
           make-install-args:
-            - GSM_INSTALL_LIB=/app/lib
+            - GSM_INSTALL_LIB=/app/wine/lib
         make-install-args: &gsm_make_install_args
           - INSTALL_ROOT=/app
-          - GSM_INSTALL_INC=/app/include
+          - GSM_INSTALL_INC=/app/wine/include
         no-autogen: true
         cleanup: &gsm_cleanup
           - /bin
@@ -320,7 +292,7 @@ modules:
       - name: gsm-32bit
         build-options:
           make-install-args:
-            - GSM_INSTALL_LIB=/app/lib32
+            - GSM_INSTALL_LIB=/app/wine/lib32
         make-install-args: *gsm_make_install_args
         no-autogen: true
         cleanup: *gsm_cleanup
