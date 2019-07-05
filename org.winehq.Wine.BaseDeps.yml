@@ -21,8 +21,8 @@ x-compat-i386-opts: &compat_i386_opts
 cleanup:
   - "*.a"
   - "*.la"
-  - /include
   - /share/man
+  - /doc
 
 modules:
 
