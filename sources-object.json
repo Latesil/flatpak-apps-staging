@@ -1,0 +1,6 @@
+{
+    "type": "shell",
+    "commands": [
+        "echo this is a source from an object in included file"
+    ]
+}

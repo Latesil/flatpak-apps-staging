@@ -1,0 +1,26 @@
+{
+    "id": "file.inclusion.TestCase",
+    "sdk": "org.freedesktop.Sdk",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "18.08",
+    "modules": [
+        {
+            "name": "module-embedded-object",
+            "buildsystem": "simple",
+            "build-commands": [],
+            "sources": [
+                "sources-object.json"
+            ]
+        },
+        {
+            "name": "module-embedded-list",
+            "buildsystem": "simple",
+            "build-commands": [],
+            "sources": [
+                "sources-list.json"
+            ]
+        },
+        "module-with-sources-object.json",
+        "module-with-sources-list.json"
+    ]
+}

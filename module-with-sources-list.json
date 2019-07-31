@@ -1,0 +1,8 @@
+{
+    "name": "module-included-list",
+    "buildsystem": "simple",
+    "build-commands": [],
+    "sources": [
+        "sources-list.json"
+    ]
+}
