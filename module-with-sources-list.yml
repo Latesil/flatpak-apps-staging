@@ -1,5 +1,6 @@
 name: module-included-list
 buildsystem: simple
-build-commands: []
+build-commands:
+  - test -f source
 sources:
   - sources-list.yml

@@ -1,7 +1,9 @@
 {
     "name": "module-included-object",
     "buildsystem": "simple",
-    "build-commands": [],
+    "build-commands": [
+        "test -f source"
+    ],
     "sources": [
         "sources-object.json"
     ]

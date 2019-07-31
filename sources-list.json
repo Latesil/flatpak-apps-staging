@@ -1,6 +1,7 @@
 [{
     "type": "shell",
     "commands": [
+        "touch source",
         "echo this is a source from a list in included file"
     ]
 }]

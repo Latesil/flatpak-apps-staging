@@ -5,12 +5,14 @@ runtime-version: '18.08'
 modules:
   - name: module-embedded-object
     buildsystem: simple
-    build-commands: []
+    build-commands:
+      - test -f source
     sources:
       - sources-object.yml
   - name: module-embedded-list
     buildsystem: simple
-    build-commands: []
+    build-commands:
+      - test -f source
     sources:
       - sources-list.yml
   - module-with-sources-object.yml

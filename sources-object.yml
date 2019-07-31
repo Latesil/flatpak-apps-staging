@@ -1,3 +1,4 @@
 type: shell
 commands:
+  - touch source
   - echo this is a source from an object in included file
