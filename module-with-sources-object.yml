@@ -1,0 +1,5 @@
+name: module-included-object
+buildsystem: simple
+build-commands: []
+sources:
+  - sources-object.yml
