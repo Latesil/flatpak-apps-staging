@@ -1,0 +1,82 @@
+id: org.gnome.vinagre
+sdk: org.gnome.Sdk
+runtime: org.gnome.Platform
+runtime-version: "3.32"
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --socket=pulseaudio
+  - --share=network
+command: vinagre
+rename-desktop-file: vinagre.desktop
+rename-appdata-file: vinagre.appdata.xml
+cleanup:
+  - "*.a"
+  - "*.la"
+  - /include
+  - /lib/pkgconfig
+  - /lib/cmake
+  - /share/gir-1.0
+  - /share/vala
+  - /share/man
+modules:
+
+  - name: vinagre
+    config-opts:
+      - --enable-rdp
+      - --enable-spice
+    sources:
+      - type: git
+        url: "https://gitlab.gnome.org/GNOME/vinagre.git"
+        branch: master
+    modules:
+
+      - name: gtk-vnc
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: "https://download.gnome.org/sources/gtk-vnc/1.0/gtk-vnc-1.0.0.tar.xz"
+            sha256: a81a1f1a79ad4618027628ffac27d3391524c063d9411c7a36a5ec3380e6c080
+
+      - name: freerdp
+        buildsystem: cmake-ninja
+        config-opts:
+          - -DWITH_SERVER=OFF
+          - -DWITH_CLIENT=OFF
+          - -DWITH_OSS=OFF
+          - -DWITH_ALSA=OFF
+          - -DWITH_PULSE=ON
+          - -DWITH_CHANNELS=ON
+          - -DWITH_FFMPEG=ON
+          - -DWITH_CUPS=ON
+          - -DWITH_JPEG=ON
+        sources:
+          - type: archive
+            url: "https://github.com/FreeRDP/FreeRDP/archive/2.0.0-rc4.tar.gz"
+            sha256: 3406f3bfab63f81c1533029a5bf73949ff60f22f6e155c5a08005b8b8afe6d49
+
+      - name: spice-gtk
+        buildsystem: meson
+        sources:
+          - type: archive
+            url: "https://www.spice-space.org/download/gtk/spice-gtk-0.37.tar.bz2"
+            sha256: 1f28b706472ad391cda79a93fd7b4c7a03e84b88fc46ddb35dddbe323c923bb7
+        modules:
+
+          - name: spice-protocol
+            buildsystem: meson
+            sources:
+              - type: archive
+                url: "https://www.spice-space.org/download/releases/spice-protocol-0.14.0.tar.bz2"
+                sha256: b6a4aa1ca32668790b45a494bbd000e9d05797b391d5a5d4b91adf1118216eac
+
+          - name: pyparsing
+            buildsystem: simple
+            build-commands:
+              - python3 setup.py install --prefix=/app --root=/
+            sources:
+              - type: archive
+                url: "https://github.com/pyparsing/pyparsing/archive/pyparsing_2.4.2.tar.gz"
+                sha256: fc079f975968ae21f82223ae2340a39e7182ea993631812ddb5978619ed5c456
