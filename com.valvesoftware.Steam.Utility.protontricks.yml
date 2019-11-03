@@ -22,11 +22,16 @@ modules:
     buildsystem: simple
     build-commands:
       - python3 setup.py install --prefix=${FLATPAK_DEST} --root=/
+    post-install:
+      - install -Dm644 -t ${FLATPAK_DEST}/share/metainfo ${FLATPAK_ID}.metainfo.xml
+      - appstream-compose --basename=${FLATPAK_ID} --prefix=${FLATPAK_DEST} --origin=flatpak ${FLATPAK_ID}
     sources:
       - type: git
         url: "https://github.com/Matoking/protontricks.git"
         tag: "1.2.5"
         commit: 777b7c5b95589f1d05abfb8f9da8e3d71c605e15
+      - type: file
+        path: com.valvesoftware.Steam.Utility.protontricks.metainfo.xml
     modules:
 
       - name: winetricks
