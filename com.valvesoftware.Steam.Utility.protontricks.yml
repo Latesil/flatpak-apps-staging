@@ -97,3 +97,9 @@ modules:
               - type: archive
                 url: "https://www.rarlab.com/rar/unrarsrc-5.8.3.tar.gz"
                 sha256: 3591685c8f5bbcb0be09de3d0a0544adb88966b9cccb80986f6cd2b534fd91a6
+
+          - name: binutils-ar
+            buildsystem: simple
+            build-commands:
+              - install -Dm755 /usr/bin/ar -t ${FLATPAK_DEST}/bin/
+              - install -Dm755 /usr/lib/$(gcc -print-multiarch)/libbfd-*.so -t ${FLATPAK_DEST}/lib/
