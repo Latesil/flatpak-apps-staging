@@ -88,3 +88,12 @@ modules:
               - type: archive
                 url: "https://www.cabextract.org.uk/cabextract-1.9.1.tar.gz"
                 sha256: afc253673c8ef316b4d5c29cc4aa8445844bee14afffbe092ee9469405851ca7
+
+          - name: unrar
+            no-autogen: true
+            make-install-args:
+              - DESTDIR=$(FLATPAK_DEST)
+            sources:
+              - type: archive
+                url: "https://www.rarlab.com/rar/unrarsrc-5.8.3.tar.gz"
+                sha256: 3591685c8f5bbcb0be09de3d0a0544adb88966b9cccb80986f6cd2b534fd91a6
