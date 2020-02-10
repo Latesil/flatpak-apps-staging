@@ -1,0 +1,23 @@
+id: io.conan.conan
+sdk: org.freedesktop.Sdk
+runtime: org.freedesktop.Sdk
+runtime-version: "19.08"
+finish-args:
+  - --share=network
+  - --allow=devel
+  - --filesystem=host
+command: conan
+modules:
+
+  - name: conan
+    buildsystem: simple
+    build-commands:
+      - python3 setup.py build
+      - python3 setup.py install --prefix=${FLATPAK_DEST} --root=/
+    sources:
+      - type: archive
+        url: "https://github.com/conan-io/conan/archive/1.22.0.tar.gz"
+        sha256: 4b948455d30203210601d8db330163e055910bab67829091d857121a05320058
+    modules:
+      - conan-dependencies.json
+      - conan-server-dependencies.json
