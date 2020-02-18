@@ -24,7 +24,7 @@ modules:
     sources: &mangohud_sources
       - type: git
         url: "https://github.com/flightlessmango/MangoHud.git"
-        tag:  v0.2.0
+        commit: 65b90fc01b5fe9a086b26de087eaffdb6b298f2f
     modules:
 
       # Hack! It looks for vk registry in install prefix
